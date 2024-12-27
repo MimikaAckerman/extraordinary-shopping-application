@@ -12,7 +12,7 @@ func GetServicioCentros(c *gin.Context) {
 	// Consulta SQL
 	query := `select distinct uc.Center , uc.CodNav ,uc.Zone from UbUserCenters uuc
 				join UbCenters uc on uuc.PkCenterId=uc.PkCenter
-				where uuc.IsOwner=1 and CodNav like 'S0%' `
+				where uuc.IsOwner=1 and CodNav like 'S0%' and Zone like 'SP-%' `
 
 	// Ejecutar la consulta
 	rows, err := config.DB.Query(query)

@@ -50,8 +50,9 @@ func InsertComprasExtraordinarias(c *gin.Context) {
 		// Obtener el nombre del archivo y su extensión
 		prodData.NombreAdjunto = file.Filename
 	} else {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "No se ha proporcionado un archivo adjunto"})
-		return
+		// Si no se proporciona archivo, establece valores predeterminados
+		datosAdjuntoBytes = nil
+		prodData.NombreAdjunto = ""
 	}
 
 	// Preparar la consulta SQL
