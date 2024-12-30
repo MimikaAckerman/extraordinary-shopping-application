@@ -55,10 +55,14 @@ func ConnectDB() {
 }
 
 func GetPort() string {
-	// Obtener el puerto de la variable de entorno
-	PORT := os.Getenv("HTTP_PLATFORM_PORT")
-	if PORT == "" {
-		PORT = "8000" // Valor predeterminado si no se proporciona un puerto
+	// Verificar primero la variable de entorno estándar de Render
+	port := os.Getenv("PORT")
+	if port == "" {
+		// Verificar otra variable de entorno que podrías estar usando
+		port = os.Getenv("HTTP_PLATFORM_PORT")
+		if port == "" {
+			port = "8000" // Valor predeterminado si no se proporciona un puerto
+		}
 	}
-	return PORT
+	return port
 }

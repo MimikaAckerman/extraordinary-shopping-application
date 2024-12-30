@@ -7,5 +7,5 @@ import (
 )
 
 func Welcome(c *gin.Context) {
-	c.String(http.StatusOK, "¡Bienvenido a la API de la aplicacion de PSC!")
+	c.String(http.StatusOK, "¡Bienvenido a la API de la aplicacion de compras extraordinarias!")
 }
