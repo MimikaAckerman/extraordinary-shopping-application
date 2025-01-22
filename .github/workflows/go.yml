@@ -1,0 +1,53 @@
+name: Build Go app and push to Azure
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      # Paso 1: Clonar el repositorio
+      - uses: actions/checkout@v3
+
+      # Paso 2: Configurar Go
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: 1.23 # Cambiado a 1.20 para evitar problemas de compatibilidad
+
+      # Paso 3: Verificar la versión de Go instalada
+      - name: Check Go version
+        run: go version
+
+      # Paso 4: Instalar las dependencias
+      - name: Install Dependencies
+        run: |
+          go mod tidy
+          go mod download
+
+      # Paso 5: Compilar la aplicación
+      - name: Build
+        run: go build -o build/bk-proyect-location-cables.exe -v
+
+      # Paso 6: Verificar los archivos generados en la carpeta build (opcional, para depuración)
+      - name: List files in build directory
+        run: dir build
+
+      # Paso 7: Empaquetar la aplicación (incluyendo web.config si lo tienes)
+      - name: Prepare deployment package
+        run: |
+          Compress-Archive -Path build\* -DestinationPath deployment-package.zip
+
+      # Paso 8: Desplegar a Azure
+      - name: Deploy to Azure
+        uses: Azure/webapps-deploy@v2
+        with:
+          app-name: api-application-location-cables # Nombre correcto de tu App Service
+
+          package: deployment-package.zip
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
