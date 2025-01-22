@@ -32,7 +32,7 @@ jobs:
 
       # Paso 5: Compilar la aplicación
       - name: Build
-        run: go build -o build/bk-proyect-location-cables.exe -v
+        run: go build -o build/bk-compras-extraordinarias.exe -v
 
       # Paso 6: Verificar los archivos generados en la carpeta build (opcional, para depuración)
       - name: List files in build directory
@@ -47,7 +47,7 @@ jobs:
       - name: Deploy to Azure
         uses: Azure/webapps-deploy@v2
         with:
-          app-name: api-application-location-cables # Nombre correcto de tu App Service
+          app-name: comprasExtraordinariasAPI # Nombre correcto de tu App Service
 
           package: deployment-package.zip
-          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          publish-profile: ${{ secrets.AZURE_WEAPP_PUBLISH_PROFILE }}
