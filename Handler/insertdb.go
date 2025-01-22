@@ -98,17 +98,30 @@ func InsertComprasExtraordinarias(c *gin.Context) {
 		return
 	}
 
-	//logica para enviar correos basada en el coste
+	// Lógica para envío de correos basado en el coste
 	if prodData.Coste > 2000 {
-		// Enviar correo a cau@grupoub.com primero
+		// Enviar correo inicial a j.pascual@grupoub.com
 		err = EnviarCorreoAprobador(prodData.Titulo, prodData.Descripcion, prodData.Proyecto, fmt.Sprintf("%.2f", prodData.Coste), "j.pascual@grupoub.com")
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Error al enviar el correo a j.pascual@grupoub.com: " + err.Error()})
 			return
 		}
 
-		//si se aprueba la solicitud, enviar correo a e.herrera@grupoub.com
-		if prodData.EstadoAprobacion == "Aprobado" {
+		// Verificar el estado de aprobación en la base de datos
+		var estadoAprobacion string
+		queryEstado := `
+			SELECT estado_aprobacion
+			FROM compras_extraordinarias
+			WHERE titulo = @titulo
+		`
+		err = config.DB.QueryRow(queryEstado, sql.Named("titulo", prodData.Titulo)).Scan(&estadoAprobacion)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Error al consultar el estado de aprobación: " + err.Error()})
+			return
+		}
+
+		// Si el estado es "Aprobado", enviar correo a e.herrera@grupoub.com
+		if estadoAprobacion == "Aprobado" {
 			err = EnviarCorreoAprobador(prodData.Titulo, prodData.Descripcion, prodData.Proyecto, fmt.Sprintf("%.2f", prodData.Coste), "e.herrera@grupoub.com")
 			if err != nil {
 				c.JSON(http.StatusInternalServerError, gin.H{"error": "Error al enviar el correo a e.herrera@grupoub.com: " + err.Error()})
@@ -116,19 +129,11 @@ func InsertComprasExtraordinarias(c *gin.Context) {
 			}
 		}
 	} else {
-
-		// Enviar correos
-
-		// Correo al solicitante
-		err = EnviarCorreoSolicitante(prodData.Titulo, prodData.Descripcion, prodData.Proyecto, fmt.Sprintf("%.2f", prodData.Coste), prodData.Usuario)
-		if err != nil {
-			c.Error(err)
-		}
-
-		// Enviar correo al aprobador
+		// Si el coste es <= 2000, mantener la lógica actual
 		err = EnviarCorreoAprobador(prodData.Titulo, prodData.Descripcion, prodData.Proyecto, fmt.Sprintf("%.2f", prodData.Coste), "e.herrera@grupoub.com")
 		if err != nil {
-			c.Error(err)
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Error al enviar el correo a e.herrera@grupoub.com: " + err.Error()})
+			return
 		}
 	}
 
