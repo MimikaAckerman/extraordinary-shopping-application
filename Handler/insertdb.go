@@ -101,9 +101,9 @@ func InsertComprasExtraordinarias(c *gin.Context) {
 	//logica para enviar correos basada en el coste
 	if prodData.Coste > 2000 {
 		// Enviar correo a cau@grupoub.com primero
-		err = EnviarCorreoAprobador(prodData.Titulo, prodData.Descripcion, prodData.Proyecto, fmt.Sprintf("%.2f", prodData.Coste), "cau@grupoub.com")
+		err = EnviarCorreoAprobador(prodData.Titulo, prodData.Descripcion, prodData.Proyecto, fmt.Sprintf("%.2f", prodData.Coste), "j.pascual@grupoub.com")
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "Error al enviar el correo a cau@grupoub.com: " + err.Error()})
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Error al enviar el correo a j.pascual@grupoub.com: " + err.Error()})
 			return
 		}
 
