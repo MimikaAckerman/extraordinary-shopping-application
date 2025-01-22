@@ -34,20 +34,15 @@ jobs:
       - name: Build
         run: go build -o build/bk-compras-extraordinarias.exe -v
 
-      # Paso 6: Verificar los archivos generados en la carpeta build (opcional, para depuración)
-      - name: List files in build directory
-        run: dir build
-
-      # Paso 7: Empaquetar la aplicación (incluyendo web.config si lo tienes)
+      # Paso 6: Empaquetar la aplicación (incluyendo web.config)
       - name: Prepare deployment package
         run: |
           Compress-Archive -Path build\* -DestinationPath deployment-package.zip
 
-      # Paso 8: Desplegar a Azure
+      # Paso 7: Desplegar a Azure
       - name: Deploy to Azure
         uses: Azure/webapps-deploy@v2
         with:
-          app-name: comprasExtraordinariasAPI # Nombre correcto de tu App Service
-
+          app-name: comprasExtraordinariasAPI # Nombre del Azure App Service
           package: deployment-package.zip
-          publish-profile: ${{ secrets.AZURE_WEAPP_PUBLISH_PROFILE }}
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
