@@ -98,18 +98,38 @@ func InsertComprasExtraordinarias(c *gin.Context) {
 		return
 	}
 
-	// Enviar correos
+	//logica para enviar correos basada en el coste
+	if prodData.Coste > 2000 {
+		// Enviar correo a cau@grupoub.com primero
+		err = EnviarCorreoAprobador(prodData.Titulo, prodData.Descripcion, prodData.Proyecto, fmt.Sprintf("%.2f", prodData.Coste), "cau@grupoub.com")
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Error al enviar el correo a cau@grupoub.com: " + err.Error()})
+			return
+		}
 
-	// Correo al solicitante
-	err = EnviarCorreoSolicitante(prodData.Titulo, prodData.Descripcion, prodData.Proyecto, fmt.Sprintf("%.2f", prodData.Coste), prodData.Usuario)
-	if err != nil {
-		c.Error(err)
-	}
+		//si se aprueba la solicitud, enviar correo a e.herrera@grupoub.com
+		if prodData.EstadoAprobacion == "Aprobado" {
+			err = EnviarCorreoAprobador(prodData.Titulo, prodData.Descripcion, prodData.Proyecto, fmt.Sprintf("%.2f", prodData.Coste), "e.herrera@grupoub.com")
+			if err != nil {
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "Error al enviar el correo a e.herrera@grupoub.com: " + err.Error()})
+				return
+			}
+		}
+	} else {
 
-	// Enviar correo al aprobador
-	err = EnviarCorreoAprobador(prodData.Titulo, prodData.Descripcion, prodData.Proyecto, fmt.Sprintf("%.2f", prodData.Coste), "e.herrera@grupoub.com")
-	if err != nil {
-		c.Error(err)
+		// Enviar correos
+
+		// Correo al solicitante
+		err = EnviarCorreoSolicitante(prodData.Titulo, prodData.Descripcion, prodData.Proyecto, fmt.Sprintf("%.2f", prodData.Coste), prodData.Usuario)
+		if err != nil {
+			c.Error(err)
+		}
+
+		// Enviar correo al aprobador
+		err = EnviarCorreoAprobador(prodData.Titulo, prodData.Descripcion, prodData.Proyecto, fmt.Sprintf("%.2f", prodData.Coste), "e.herrera@grupoub.com")
+		if err != nil {
+			c.Error(err)
+		}
 	}
 
 	// Respuesta de éxito
