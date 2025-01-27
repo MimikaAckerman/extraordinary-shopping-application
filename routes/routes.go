@@ -27,5 +27,7 @@ func RegisterRoutes() *gin.Engine {
 	r.POST("/loginuser", Handler.LoginUser)                   //login user
 	r.GET("/servicio-centros", Handler.GetServicioCentros)
 
+	r.POST("/send-email", Handler.SendEmail) //ruta para el envio de email
+
 	return r
 }
