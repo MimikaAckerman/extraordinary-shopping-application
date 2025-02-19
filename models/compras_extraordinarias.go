@@ -12,6 +12,7 @@ type ComprasExtraordinarias struct {
 	Link3             string                `json:"link3" binding:"required"`
 	Direccion         string                `json:"direccion" binding:"required"`
 	Servicio          string                `json:"servicio" binding:"required"`
+	Centro            string                `json:"centro" binding:"required"`
 	TipoPeticion      string                `json:"tipoPeticion" binding:"required"`
 	Urgencia          string                `json:"urgencia" binding:"required"`
 	Proyecto          string                `json:"proyecto" binding:"required"`

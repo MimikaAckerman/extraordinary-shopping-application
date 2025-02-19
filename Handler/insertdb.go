@@ -59,12 +59,12 @@ func InsertComprasExtraordinarias(c *gin.Context) {
 		INSERT INTO compras_extraordinarias (
 			titulo, aprobador, estado_aprobacion, estado_aprobacion2, estado_compra, descripcion, fecha, 
 			link1, link2, link3, direccion, servicio, tipo_peticion, urgencia, 
-			proyecto, datos_adjunto, nombre_adjunto, coste, aprobador2, usuario
+			proyecto, datos_adjunto, nombre_adjunto, coste, aprobador2, usuario, centro
 		)
 		VALUES (
 			@p1, @p2, @p3, @p4, @p5, @p6, @p7, 
 			@p8, @p9, @p10, @p11, @p12, @p13, @p14, 
-			@p15, @p16, @p17, @p18, @p19, @p20
+			@p15, @p16, @p17, @p18, @p19, @p20, @p21
 		)
 	`
 
@@ -90,6 +90,7 @@ func InsertComprasExtraordinarias(c *gin.Context) {
 		sql.Named("p18", prodData.Coste),
 		sql.Named("p19", prodData.Aprobador2),
 		sql.Named("p20", prodData.Usuario),
+		sql.Named("p21", prodData.Centro),
 	)
 
 	if err != nil {
